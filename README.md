@@ -79,3 +79,5 @@ npm run start:dev
 ```
 
 Acesse o endpoint exposto no localhost por uma plataforma de API (Postman ou Insomnia) utilizando a porta **3000**.
+
+As imagens testadas utilizando a api do picsum ficam sem tamanho em bytes. Foram realizados testes utilizando a api do unsplash e tudo funcionou normalmente.
