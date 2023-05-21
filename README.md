@@ -1,73 +1,81 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Desafio Trakto -- Backend Developer
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Objetivo
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Desenvolver uma API Rest com um único end-point utilizando o framework NestJS e MongoDB. Realizar a tarefa como descrito a seguir.
 
-## Description
+## Descrição
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+O end-point recebe uma url pública de uma imagem JPG, salva no sistema de arquivos e gera uma versão reduzida da imagem (acrescentando o sufixo \_thumb ao nome do arquivo), que tem sua maior dimensão com 720px e a dimensão menor proporcional. Caso a maior dimensão seja inferior a 720px, apenas uma cópia da imagem original é feita com o sufixo no nome do arquivo.
 
-## Installation
+A imagem reduzida tem compactação e o fator é enviado como parâmentro junto com a url da imagem original (valor deve maior que 0 e menor que 1).
 
-```bash
-$ npm install
+O serviço também registra numa instância do mongodb, todos os metadados contidos no exif da imagem original.
+
+---
+
+## Modelo de requisição
+
+**URL:** `${BASE_URL}/image/save`  
+**METHOD:** `POST`  
+**BODY:**
+
+```json
+{
+  "image": "https://assets.storage.trakto.io/AkpvCuxXGMf3npYXajyEZ8A2APn2/0e406885-9d03-4c72-bd92-c6411fbe5c49.jpeg",
+  "compress": 0.9
+}
 ```
 
-## Running the app
+---
 
-```bash
-# development
-$ npm run start
+## Modelo de resposta
 
-# watch mode
-$ npm run start:dev
+### **SUCESSO**
 
-# production mode
-$ npm run start:prod
+**STATUS:** Padrão de status http
+
+```json
+{
+  "localpath": {
+    "original": "/path/to/original.jpg",
+    "thumb": "/path/to/thumb.jpg"
+  },
+  "metadata": {
+    "ALL_EXIF_DATA_KEY": "ALL_EXIF_DATA_VALUE"
+  }
+}
 ```
 
-## Test
+### **FALHA**
 
-```bash
-# unit tests
-$ npm run test
+**STATUS:** Padrão de status http
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```json
+{
+  "statusCode": NUMBER_STATUS_CODE,
+  "message": "Error message"
+}
 ```
 
-## Support
+## Como executar:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Para iniciar o projeto, instale as dependências:
 
-## Stay in touch
+```shell
+npm install
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Suba a instância do MongoDB do docker-compose:
 
-## License
+```shell
+docker-compose up -d
+```
 
-Nest is [MIT licensed](LICENSE).
+Rode o projeto Nest:
+
+```shell
+npm run start:dev
+```
+
+Acesse o endpoint exposto no localhost por uma plataforma de API (Postman ou Insomnia) utilizando a porta **3000**.

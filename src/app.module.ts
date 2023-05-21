@@ -1,18 +1,22 @@
-import { Module } from '@nestjs/common';
+import { ImageSchema } from './schemas/image.schema';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { DownloadFileUtil } from './utils/download-file.util';
-import { SharpUtil } from './utils/sharp.util';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
+    MongooseModule.forRoot(
+      'mongodb://root:password@localhost:27017/database?authSource=admin',
+    ),
+    MongooseModule.forFeature([{ name: 'Image', schema: ImageSchema }]),
     MulterModule.register({
       storage: memoryStorage(),
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, DownloadFileUtil, SharpUtil],
+  providers: [AppService],
 })
 export class AppModule {}
