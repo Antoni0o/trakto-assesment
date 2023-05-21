@@ -8,7 +8,6 @@ import { load, Tags } from 'exifreader';
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as sharp from 'sharp';
-import sizeOf from 'image-size';
 import axios from 'axios';
 
 @Injectable()
